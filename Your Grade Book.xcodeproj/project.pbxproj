@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0429EA772785ACB500CC8FED /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0429EA762785ACB500CC8FED /* Subject.swift */; };
+		04BD36832789CF3A00440635 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD36822789CF3A00440635 /* Task.swift */; };
+		04BD36852789CF5400440635 /* CurrentTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD36842789CF5400440635 /* CurrentTask.swift */; };
+		04BD36872789CF8000440635 /* System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD36862789CF8000440635 /* System.swift */; };
 		A381CDB5277DFD9E00C8A6E8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CDB4277DFD9E00C8A6E8 /* AppDelegate.swift */; };
 		A381CDB7277DFD9E00C8A6E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CDB6277DFD9E00C8A6E8 /* SceneDelegate.swift */; };
 		A381CDB9277DFD9E00C8A6E8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CDB8277DFD9E00C8A6E8 /* ViewController.swift */; };
@@ -16,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0429EA762785ACB500CC8FED /* Subject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
+		04BD36822789CF3A00440635 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		04BD36842789CF5400440635 /* CurrentTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTask.swift; sourceTree = "<group>"; };
+		04BD36862789CF8000440635 /* System.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = System.swift; sourceTree = "<group>"; };
 		A381CDB1277DFD9E00C8A6E8 /* Your Grade Book.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Your Grade Book.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A381CDB4277DFD9E00C8A6E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A381CDB6277DFD9E00C8A6E8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +45,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0429EA752785AC8100CC8FED /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0429EA762785ACB500CC8FED /* Subject.swift */,
+				04BD36822789CF3A00440635 /* Task.swift */,
+				04BD36842789CF5400440635 /* CurrentTask.swift */,
+				04BD36862789CF8000440635 /* System.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		A381CDA8277DFD9E00C8A6E8 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +75,7 @@
 		A381CDB3277DFD9E00C8A6E8 /* Your Grade Book */ = {
 			isa = PBXGroup;
 			children = (
+				0429EA752785AC8100CC8FED /* Models */,
 				A381CDB4277DFD9E00C8A6E8 /* AppDelegate.swift */,
 				A381CDB6277DFD9E00C8A6E8 /* SceneDelegate.swift */,
 				A381CDB8277DFD9E00C8A6E8 /* ViewController.swift */,
@@ -138,8 +158,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0429EA772785ACB500CC8FED /* Subject.swift in Sources */,
+				04BD36872789CF8000440635 /* System.swift in Sources */,
 				A381CDB9277DFD9E00C8A6E8 /* ViewController.swift in Sources */,
+				04BD36832789CF3A00440635 /* Task.swift in Sources */,
 				A381CDB5277DFD9E00C8A6E8 /* AppDelegate.swift in Sources */,
+				04BD36852789CF5400440635 /* CurrentTask.swift in Sources */,
 				A381CDB7277DFD9E00C8A6E8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
