@@ -8,25 +8,43 @@
 import UIKit
 
 class NewSubjectViewController: UIViewController {
-   
+    
     @IBOutlet var newSubjectNameTextField: UITextField!
     @IBOutlet var maxSubjectMark: UITextField!
     
+    var subject: Subject?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setUpData()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: - IBActions
+    @IBAction func pressCancel(_ sender: Any) {
+        dismiss(animated: true)
     }
-    */
-
+    
+    @IBAction func pressDoneButton(_ sender: Any) {
+        guard let newSubject = newSubjectNameTextField.text, let maxSubjectMark = maxSubjectMark.text else { return }
+        guard !newSubject.isEmpty, !maxSubjectMark.isEmpty else { return }
+        
+        if let subject = subject {
+            StorageManager.shared.changeSubject(subject: subject, name: newSubject, maxPoint: Int(maxSubjectMark) ?? 0)
+        } else {
+            let subject = Subject()
+            subject.name = newSubject
+            subject.maxPoint = Int(maxSubjectMark) ?? 0
+            
+            StorageManager.shared.save(subject: subject)
+        }
+        dismiss(animated: true)
+    }
+    
+    // MARK: - Setting function
+    func setUpData() {
+        if let subject = subject {
+            newSubjectNameTextField.text = subject.name
+            maxSubjectMark.text = String(subject.maxPoint)
+        }
+    }
 }

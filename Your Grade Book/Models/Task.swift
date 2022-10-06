@@ -4,10 +4,13 @@
 //
 //  Created by mac on 08.01.2022.
 //
+import RealmSwift
 
-struct Task {
-    let name: String
-    let maxPoint: Int
-    let systemType: System
-    let points: [CurrentTask]
+class Task: Object {
+    @Persisted var name: String
+    @Persisted var maxPoint: Int
+    @Persisted var systemType = System.accumulativeSystem
+    @Persisted var coefficient: Double
+    @Persisted var points: List<CurrentTask>
+    
 }

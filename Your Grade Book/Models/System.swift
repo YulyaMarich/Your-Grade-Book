@@ -5,7 +5,10 @@
 //  Created by mac on 08.01.2022.
 //
 
-enum System {
-    case accumulativeSystem
-    case gpa
+import RealmSwift
+
+enum System: String, PersistableEnum {
+    case accumulativeSystem = "Накопичення"
+    case gpa = "Визначення середнього"
+    
 }
