@@ -11,22 +11,63 @@ import RealmSwift
 class SubjectViewController: UITableViewController {
     
     var currentSubject: Subject!
-    var results = 0.0
-    var tasks: List<Task>!
+    private var results = 0.0
+    private var tasks: List<Task>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tasks = currentSubject.tasks
+        setUpVC()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewWillAppear(animated)
         tableView.reloadData()
     }
     
+    //MARK: - Setting functions
+    
+    private func setUpVC() {
+        tasks = currentSubject.tasks
+        navigationController?.navigationBar.tintColor = .black
+    }
+    
+    private func changeCellBackroundColor(indexPath: IndexPath, cell: SubjectTableViewCell) {
+        let task = tasks[indexPath.row]
+        
+        if results < (Double(task.maxPoint)/2) {
+            cell.backgroundColor = UIColor(red: 0.929, green: 0.416, blue: 0.369, alpha: 1)
+        } else {
+            cell.backgroundColor = UIColor(red: 97/255, green: 197/255, blue: 84/255, alpha: 1)
+        }
+    }
+    
+    //MARK: - Navigation functions
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let navigationVC = segue.destination as? UINavigationController, let newSubjectVC = navigationVC.topViewController as? NewCurrentTaskViewController {
+            newSubjectVC.subject = currentSubject
+        } else {
+            guard let indexPath = tableView.indexPathForSelectedRow else { return }
+            let currentTaskVC = segue.destination as! CurrentTaskViewController
+            let currentTask = tasks[indexPath.row]
+            currentTaskVC.task = currentTask
+        }
+    }
+    
     // MARK: - Table view data source
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tasks.count
+        if tasks.count == 0 {
+            let emptyLabel = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            emptyLabel.text = "Your task's list is empty😉"
+            emptyLabel.textColor = .gray
+            emptyLabel.textAlignment = NSTextAlignment.center
+            self.tableView.backgroundView = emptyLabel
+            return 0
+        } else {
+            self.tableView.backgroundView = nil
+            return tasks.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -53,27 +94,9 @@ class SubjectViewController: UITableViewController {
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
-   
-    //MARK: - Navigation function
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let navigationVC = segue.destination as? UINavigationController, let newSubjectVC = navigationVC.topViewController as? NewCurrentTaskViewController {
-            newSubjectVC.subject = currentSubject
-        } else {
-            guard let indexPath = tableView.indexPathForSelectedRow else { return }
-            let currentTaskVC = segue.destination as! CurrentTaskViewController
-            let currentTask = tasks[indexPath.row]
-            currentTaskVC.task = currentTask
-        }
-    }
     
-    //MARK: - Setting function
-    func changeCellBackroundColor(indexPath: IndexPath, cell: SubjectTableViewCell) {
-        let task = tasks[indexPath.row]
-        if results < (Double(task.maxPoint)/2) {
-            cell.backgroundColor = .red
-        } else {
-            cell.backgroundColor = .green
-        }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        44
     }
 }
 

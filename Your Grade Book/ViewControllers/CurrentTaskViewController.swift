@@ -13,17 +13,54 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet var tableView: UITableView!
     @IBOutlet var newTaskButton: UIButton!
     
-    var name: String!
+    private var name: String!
     var task: Task!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpVC()
+    }
+    
+    // MARK: - IBACtion functions
+    
+    @IBAction func addOneMoreTask() {
+        let currentTask = CurrentTask()
+        currentTask.point = 0.0
+        StorageManager.shared.save(currentTask: currentTask, into: task)
+        self.tableView.reloadData()
+    }
+    
+    // MARK: - Setting functions
+    
+    private func setUpVC() {
         title = task.name
+        navigationController?.navigationBar.tintColor = .black
+    }
+    
+    // MARK: - Navigation functions
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "changeTask" {
+            let navigationVC = segue.destination as! UINavigationController
+            let newSubjectVC = navigationVC.topViewController as! NewCurrentTaskViewController
+            newSubjectVC.currentTask = task
+        }
     }
     
     // MARK: - Table view data source
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        task.points.count
+        if task.points.count == 0 {
+            let emptyLabel = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            emptyLabel.text = "You have no points😉"
+            emptyLabel.textColor = .gray
+            emptyLabel.textAlignment = NSTextAlignment.center
+            self.tableView.backgroundView = emptyLabel
+            return 0
+        } else {
+            self.tableView.backgroundView = nil
+            return task.points.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -36,6 +73,7 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
         
         cell.task = task
         cell.currentTask = task.points[indexPath.row]
+        
         
         cell.configure(name: cellName, mark: cellMark)
         
@@ -60,31 +98,19 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
-    
-    // MARK: - IBACtion function
-    @IBAction func addOneMoreTask() {
-        let currentTask = CurrentTask()
-        currentTask.point = 0.0
-        StorageManager.shared.save(currentTask: currentTask, into: task)
-        self.tableView.reloadData()
-    }
-    
-    // MARK: - Navigation function
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "changeTask" {
-            let navigationVC = segue.destination as! UINavigationController
-            let newSubjectVC = navigationVC.topViewController as! NewCurrentTaskViewController
-            newSubjectVC.currentTask = task
-        }
-    }
 }
 
 extension CurrentTaskViewController: CurrentTaskCellDelegate {
-    func showAlert(with title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Okey", style: .default)
-        
-        alert.addAction(okAction)
-        present(alert, animated: true)
+    
+    func showSomeAlert(with title: String, message: String) {
+        self.showAlert(with: title, message: message)
+    }
+    
+    func isWrongFormatOf(input: String) -> Bool {
+        self.isWrongFormatOf(text: input)
+    }
+    
+    func getDoubleFrom(text: String) -> String {
+        makeStringInTheFormOfDoubleFrom(text: text)
     }
 }

@@ -8,10 +8,12 @@
 import UIKit
 
 protocol CurrentTaskCellDelegate {
-    func showAlert(with title: String, message: String)
+    func showSomeAlert(with title: String, message: String)
+    func isWrongFormatOf(input: String) -> Bool
+    func getDoubleFrom(text: String) -> String
 }
 
-class CurrentTaskTableViewCell: UITableViewCell, UITextFieldDelegate {
+class CurrentTaskTableViewCell: UITableViewCell {
     
     @IBOutlet var currentTaskLabel: UILabel!
     @IBOutlet var markTextField: UITextField!
@@ -23,7 +25,6 @@ class CurrentTaskTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
         makeToolBarButton()
     }
     
@@ -36,31 +37,36 @@ class CurrentTaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         super.setSelected(selected, animated: animated)
     }
     
+    //MARK: - Point processing functions
+    
     private func updateNumber() {
-        guard let currentTask = currentTask, let number = Double(markTextField.text ?? "0.0") else { return }
+        guard let currentTask = currentTask, let currentMarkText = markTextField.text, let number = Double(delegate?.getDoubleFrom(text: currentMarkText) ?? "") else { return }
         
         StorageManager.shared.changeCurrentTask(currentTask: currentTask, with: number)
     }
     
-    
-    func checkMarkTextFieldText() -> Bool {
-        guard let markText = markTextField.text, !markText.isEmpty, let task = task else { return false }
+    private func checkMarkTextFieldText() -> Bool {
+        guard let markText = markTextField.text, let task = task else { return false }
         let mark = Double(markText)
-        if mark == nil {
-            delegate?.showAlert(with: "Incorrect data format", message: "Please check your mark for extra characters.")
+        if markText.isEmpty {
+            delegate?.showSomeAlert(with: AlertText.emptyTextField.title, message: AlertText.emptyTextField.message)
             return false
-        } else if let mark2 = mark, mark2 > Double(task.maxPoint) {
-            delegate?.showAlert(with: "Your mark is higher than the maximum", message: "Please change your mark or maximum mark.")
+        } else if let mark = mark, mark > Double(task.maxPoint) {
+            delegate?.showSomeAlert(with: AlertText.markIsHigherThanMaximum.title, message: AlertText.markIsHigherThanMaximum.message)
+            return false
+        } else if delegate?.isWrongFormatOf(input: markText) == true {
+            delegate?.showSomeAlert(with: AlertText.wrongFormatOfMark.title, message: AlertText.wrongFormatOfMark.message)
             return false
         } else {
             return true
         }
     }
     
-    func changePoint() {
+    private func changePoint() {
         let result = checkMarkTextFieldText()
         
         if result == true {
+            markTextField.text = delegate?.getDoubleFrom(text: markTextField.text ?? "")
             updateNumber()
         } else {
             markTextField.text = "0.0"
@@ -68,21 +74,13 @@ class CurrentTaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         }
     }
     
-    func makeToolBarButton() {
-        let toolBar = UIToolbar()
-        toolBar.sizeToFit()
-        
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                            target: self,
-                                            action: nil)
-        
-        let doneButton = UIBarButtonItem(title: "Done",
-                                         style: .done,
-                                         target: self,
-                                         action: #selector(pressToolBarDoneButton))
-        
-        toolBar.items = [flexibleSpace, doneButton]
-        markTextField.inputAccessoryView = toolBar
+    //MARK: - Setting functions
+    
+    private func makeToolBarButton() {
+        let doneButton = UITextField.ToolbarItem(title: "Done",
+                                                 target: self,
+                                                 selector: #selector(pressToolBarDoneButton))
+        markTextField.addToolbar(trailing: [doneButton])
     }
     
     @objc func pressToolBarDoneButton() {

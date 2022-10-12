@@ -35,14 +35,14 @@ class StorageManager {
     
     //MARK: - Change functions
     
-    func changeSubject(subject: Subject, name: String, maxPoint: Int) {
+    func changeSubject(subject: Subject, name: String, maxPoint: Double) {
         write {
             subject.name = name
             subject.maxPoint = maxPoint
         }
     }
     
-    func changeCurrentTask(currentTask: Task,  name: String, maxPoint: Int, systemType: System, coefficient: Double?) {
+    func changeCurrentTask(currentTask: Task,  name: String, maxPoint: Double, systemType: System, coefficient: Double?) {
         write {
             currentTask.name = name
             currentTask.maxPoint = maxPoint
@@ -101,8 +101,14 @@ class StorageManager {
         if task.systemType == .accumulativeSystem {
             results += getPontsInTask(task: task)
         } else {
-            results = (getPontsInTask(task: task) / Double(task.points.count)) * task.coefficient
+            if task.points.count != 0 {
+                results = (getPontsInTask(task: task) / Double(task.points.count)) * task.coefficient
+                if results.description.count >= 4 {
+                    return round(results * 100) / 100.0
+                }
+            }
         }
+        
         return results
     }
     
@@ -115,6 +121,7 @@ class StorageManager {
     }
     
     // MARK: - Realm function
+    
     private func write(_ completion: () -> Void) {
         do {
             try realm.write {

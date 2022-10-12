@@ -8,7 +8,7 @@
 import RealmSwift
 
 enum System: String, PersistableEnum {
-    case accumulativeSystem = "Накопичення"
-    case gpa = "Визначення середнього"
+    case accumulativeSystem = "Accumulation"
+    case gpa = "Grade point average"
     
 }

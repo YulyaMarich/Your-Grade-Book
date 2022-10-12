@@ -6,8 +6,9 @@
 //
 
 import RealmSwift
+
 class Subject: Object {
     @Persisted var name: String
-    @Persisted var maxPoint: Int
+    @Persisted var maxPoint: Double
     @Persisted var tasks: List<Task>
 }
