@@ -8,19 +8,19 @@
 import UIKit
 
 class SubjectListTableViewCell: UITableViewCell {
-
-    @IBOutlet var subjectNameLabel: UIView!
-    @IBOutlet var subjectMarkLabel: UIView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    @IBOutlet var subjectNameLabel: UILabel!
+    @IBOutlet var subjectMarkLabel: UILabel!
+    
+    var indexPath: IndexPath?
+    
+    func configure(with subject: Subject, mark: Double) {
+        subjectNameLabel.text = subject.name
+        subjectMarkLabel.text = String(mark)
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
-
+    
 }

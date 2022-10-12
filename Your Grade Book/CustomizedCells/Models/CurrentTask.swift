@@ -5,6 +5,8 @@
 //  Created by mac on 08.01.2022.
 //
 
-struct CurrentTask {
-    let point: Int
+import RealmSwift
+
+class CurrentTask: Object {
+    @Persisted var point: Double
 }

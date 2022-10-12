@@ -6,84 +6,87 @@
 //
 
 import UIKit
+import RealmSwift
 
-class SubjectsListViewController: UITableViewController {
-
+class SubjectsListViewController: UIViewController {
+    
+    @IBOutlet var tableView: UITableView!
+    var subjects: Results<Subject>!
+    var subjectToChange: Subject?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        self.tableView.dataSource = self
+        self.tableView.delegate = self
+        subjects = StorageManager.shared.realm.objects(Subject.self)
+        print(Realm.Configuration.defaultConfiguration.fileURL ?? "")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
 
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "changeSubject" {
+            let navigationVC = segue.destination as! UINavigationController
+            let changeSubjectVC = navigationVC.topViewController as! NewSubjectViewController
+            changeSubjectVC.subject = subjectToChange
+        } else if segue.identifier == "showTasks" {
+            guard let indexPath = tableView.indexPathForSelectedRow else { return }
+            let subject = subjects[indexPath.row]
+            let subjectVC = segue.destination as! SubjectViewController
+            subjectVC.currentSubject = subject
+        }
+    }
+}
+
+extension SubjectsListViewController: UITableViewDelegate, UITableViewDataSource {
+    
     // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if subjects.count == 0 {
+            let emptyLabel = UILabel(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            emptyLabel.text = "Your subject's list is empty😉"
+            emptyLabel.textColor = .gray
+            emptyLabel.textAlignment = NSTextAlignment.center
+            self.tableView.backgroundView = emptyLabel
+            return 0
+        } else {
+            self.tableView.backgroundView = nil
+            return subjects.count
+        }
     }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "subjectListCell", for: indexPath) as! SubjectListTableViewCell
+        
+        let subject = subjects[indexPath.row]
+        let results = StorageManager.shared.getNumberForSubject(subject: subject)
+        
+        cell.configure(with: subject, mark: results)
         return cell
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, _) in
+            let subjectToDelete = self.subjects[indexPath.row]
+            StorageManager.shared.deleteSubject(subject: subjectToDelete)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        
+        let editAction = UIContextualAction(style: .normal, title: "Edit") { ( _, _, isDone) in
+            self.subjectToChange = self.subjects[indexPath.row]
+            self.performSegue(withIdentifier: "changeSubject", sender: self)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction, editAction])
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        44
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
