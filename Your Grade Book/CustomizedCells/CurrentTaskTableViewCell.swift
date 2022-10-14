@@ -82,7 +82,7 @@ class CurrentTaskTableViewCell: UITableViewCell {
                                                  selector: #selector(pressToolBarDoneButton))
         markTextField.addToolbar(trailing: [doneButton])
     }
-    
+
     @objc func pressToolBarDoneButton() {
         self.endEditing(true)
         changePoint()

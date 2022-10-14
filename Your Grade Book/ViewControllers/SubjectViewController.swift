@@ -34,8 +34,10 @@ class SubjectViewController: UITableViewController {
     private func changeCellBackroundColor(indexPath: IndexPath, cell: SubjectTableViewCell) {
         let task = tasks[indexPath.row]
         
-        if results < (Double(task.maxPoint)/2) {
+        if  results <= (Double(task.maxPoint)/3) {
             cell.backgroundColor = UIColor(red: 0.929, green: 0.416, blue: 0.369, alpha: 1)
+        } else if results <= (Double(task.maxPoint)/1.5) {
+            cell.backgroundColor = UIColor(red: 0.953, green: 0.749, blue: 0.306, alpha: 1)
         } else {
             cell.backgroundColor = UIColor(red: 97/255, green: 197/255, blue: 84/255, alpha: 1)
         }

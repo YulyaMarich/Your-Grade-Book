@@ -35,6 +35,7 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
     private func setUpVC() {
         title = task.name
         navigationController?.navigationBar.tintColor = .black
+        newTaskButton.layer.cornerRadius = 10
     }
     
     // MARK: - Navigation functions
@@ -92,10 +93,9 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, _) in
             let pointToDelete = self.task.points[indexPath.row]
             StorageManager.shared.deletePoint(point: pointToDelete)
-            
             tableView.deleteRows(at: [indexPath], with: .automatic)
+           
         }
-        
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }

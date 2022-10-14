@@ -14,13 +14,12 @@ class SubjectListTableViewCell: UITableViewCell {
     
     var indexPath: IndexPath?
     
-    func configure(with subject: Subject, mark: Double) {
+    func configure(with subject: Subject, mark: Double, subjectMaxPoint: Double) {
         subjectNameLabel.text = subject.name
-        subjectMarkLabel.text = String(mark)
+        subjectMarkLabel.text = "\(mark) out of \(subjectMaxPoint)"
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
 }
