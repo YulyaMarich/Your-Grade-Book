@@ -15,8 +15,8 @@ class StorageManager {
     //MARK: - Save functions
     
     func save(subject: Subject) {
-        try! self.realm.write {
-            self.realm.add(subject)
+        write {
+            realm.add(subject)
         }
     }
     

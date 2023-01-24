@@ -7,6 +7,7 @@
 
 import UIKit
 import RealmSwift
+import Combine
 
 class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -15,6 +16,8 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
     
     private var name: String!
     var task: Task!
+    
+    var observers: [AnyCancellable] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +81,10 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
         
         cell.configure(name: cellName, mark: cellMark)
         
+        cell.pressOkButtonAction.sink { alerts in
+            self.showAlert(with: alerts[0], message: alerts[1])
+        }.store(in: &observers)
+        
         return cell
     }
     
@@ -101,11 +108,7 @@ class CurrentTaskViewController: UIViewController, UITableViewDataSource, UITabl
 }
 
 extension CurrentTaskViewController: CurrentTaskCellDelegate {
-    
-    func showSomeAlert(with title: String, message: String) {
-        self.showAlert(with: title, message: message)
-    }
-    
+   
     func isWrongFormatOf(input: String) -> Bool {
         self.isWrongFormatOf(text: input)
     }

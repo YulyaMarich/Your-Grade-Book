@@ -6,9 +6,9 @@
 //
 
 import UIKit
+import Combine
 
 protocol CurrentTaskCellDelegate {
-    func showSomeAlert(with title: String, message: String)
     func isWrongFormatOf(input: String) -> Bool
     func getDoubleFrom(text: String) -> String
 }
@@ -23,14 +23,11 @@ class CurrentTaskTableViewCell: UITableViewCell {
     var task: Task?
     var currentTask: CurrentTask?
     
+    let pressOkButtonAction = PassthroughSubject<[String], Never>()
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         makeToolBarButton()
-    }
-    
-    func configure(name: String, mark: String) {
-        currentTaskLabel.text = name
-        markTextField.text = mark
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -49,13 +46,13 @@ class CurrentTaskTableViewCell: UITableViewCell {
         guard let markText = markTextField.text, let task = task else { return false }
         let mark = Double(markText)
         if markText.isEmpty {
-            delegate?.showSomeAlert(with: AlertText.emptyTextField.title, message: AlertText.emptyTextField.message)
+            pressOkButtonAction.send([AlertText.emptyTextField.title, AlertText.emptyTextField.message])
             return false
         } else if let mark = mark, mark > Double(task.maxPoint) {
-            delegate?.showSomeAlert(with: AlertText.markIsHigherThanMaximum.title, message: AlertText.markIsHigherThanMaximum.message)
+            pressOkButtonAction.send([AlertText.markIsHigherThanMaximum.title, AlertText.markIsHigherThanMaximum.message])
             return false
         } else if delegate?.isWrongFormatOf(input: markText) == true {
-            delegate?.showSomeAlert(with: AlertText.wrongFormatOfMark.title, message: AlertText.wrongFormatOfMark.message)
+            pressOkButtonAction.send([AlertText.wrongFormatOfMark.title, AlertText.wrongFormatOfMark.message])
             return false
         } else {
             return true
@@ -75,6 +72,11 @@ class CurrentTaskTableViewCell: UITableViewCell {
     }
     
     //MARK: - Setting functions
+    
+    func configure(name: String, mark: String) {
+        currentTaskLabel.text = name
+        markTextField.text = mark
+    }
     
     private func makeToolBarButton() {
         let doneButton = UITextField.ToolbarItem(title: "Done",
